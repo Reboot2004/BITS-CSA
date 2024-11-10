@@ -43,7 +43,7 @@ class _MLModelPageState extends State<MLModelPage> {
         print(jsonEncode(inputData)); // Optional: Log the data before sending
 
         final response = await http.post(
-          Uri.parse('http://localhost:5000/predict'),  // Replace with your API URL
+          Uri.parse('opposite-winnifred-mna-21984855.koyeb.app/predict'),  // Replace with your API URL
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(inputData),
         );

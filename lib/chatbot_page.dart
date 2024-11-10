@@ -22,7 +22,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:5000/chat'), // Replace with your deployed server URL
+        Uri.parse('opposite-winnifred-mna-21984855.koyeb.app/chat'), // Replace with your deployed server URL
         headers: {"Content-Type": "application/json; charset=UTF-8"},
         body: json.encode({'message': userMessage}),
       );
@@ -35,7 +35,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
         // Append the response, references, and additional_references to the messages list
         String botMessage = data['response'];
 
-        if (data['references'] != null) {
+        if (data['reference'] != null) {
           botMessage += "\n\nReferences:\n${data['references'].join('\n')}";
         }
 

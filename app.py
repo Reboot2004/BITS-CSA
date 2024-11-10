@@ -25,15 +25,21 @@ def get_context_from_serpapi(query):
         data = response.json()
         if 'organic_results' in data and len(data['organic_results']) > 0:
             # Concatenate multiple snippets to provide a more comprehensive context
-            context = " ".join([result['snippet'] for result in data['organic_results'][:3]])
+            context = ""
+            additional_references = []
+            for result in data['organic_results'][:3]:
+                if len(context) + len(result['snippet']) < 512:  # Limit the context length
+                    context += result['snippet'] + " "
+                    additional_references.append(result['link'])
+                else:
+                    break
             reference = data['organic_results'][0]['link']
-            additional_references = [result['link'] for result in data['organic_results'][1:3]]
-            return context, reference, additional_references
+            return context.strip(), reference, additional_references
     return None, None, None
 
-def generate_fallback_response(query):
-    # Provide a default response if the generated answer is not satisfactory
-    return "I'm sorry, I couldn't find a relevant answer to your question. Please try rephrasing it or providing more details.", None, None
+# def generate_fallback_response(query):
+#     # Provide a default response if the generated answer is not satisfactory
+#     return "I'm sorry, I couldn't find a relevant answer to your question. Please try rephrasing it or providing more details.", None, None
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -55,9 +61,10 @@ def chat():
 
     try:
         result = model(question=prompt, context=context)
-        if not result['answer'] or len(result['answer']) < 200:
+        if not result['answer'] or len(result['answer']) < 2:
+            pass
             # If the answer is too short or not satisfactory, use the fallback response
-            answer, reference, additional_references = generate_fallback_response(prompt)
+            #answer, reference, additional_references = generate_fallback_response(prompt)
         else:
             answer = result['answer']
 
